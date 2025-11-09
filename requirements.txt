@@ -1,0 +1,9 @@
+# --- Core dependencies ---
+pyspark==3.3.2
+pandas==2.1.4
+requests==2.31.0
+psycopg2-binary==2.9.9
+
+# --- Optional but helpful ---
+python-dotenv==1.0.1   # if you want to store DB creds in .env file
+PyYAML==6.0.2          # if you use YAML config files
