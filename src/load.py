@@ -51,15 +51,11 @@ def load_data(sdf, config, jdbc_driver_path):
         return
 
     # Join on id (natural key)
-    joined_df = sdf.alias("new").join(
-        existing_df.filter(col("is_current") == True).alias("old"),
-        on="id",
-        how="left"
-    )
+    joined_df = sdf.alias("new").join(existing_df.alias("old"), on="crypto_id", how="left")
 
     #Find changed records (compare fields that can change)
     changed_df = joined_df.filter(
-        (col("old.current_price") != col("new.current_price")) |
+        (col("old.price_usd") != col("new.price_usd")) |
         (col("old.market_cap") != col("new.market_cap"))
     )
 
@@ -84,7 +80,7 @@ def load_data(sdf, config, jdbc_driver_path):
         .option("user", config['pg_user']) \
         .option("password", config['pg_password']) \
         .option("driver", "org.postgresql.Driver") \
-        .mode("overwrite") \
+        .mode("append") \
         .save()
     logging.info(f"SCD Type 2 update complete. Final record count: {final_df.count()}")
     logging.info("Load: write complete")
