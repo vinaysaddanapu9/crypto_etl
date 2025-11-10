@@ -36,8 +36,6 @@ def load_data(sdf, config, jdbc_driver_path):
                 .withColumn("end_date", lit(None).cast("timestamp")) \
                 .withColumn("is_current", lit(True).cast(BooleanType()))
 
-
-
     if existing_df.rdd.isEmpty():
         sdf.write.format("jdbc") \
             .option("url", jdbc_url) \
