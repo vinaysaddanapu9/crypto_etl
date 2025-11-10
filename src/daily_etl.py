@@ -10,6 +10,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from pyspark.sql import SparkSession
 from src.utils import setup_logging, load_config
+from src.utils import validate_data
 from src.extract import extract_data
 from src.transform import transform_data
 from src.load import load_data
@@ -37,8 +38,13 @@ def main():
     spark.sparkContext.setLogLevel("WARN")
 
     try:
+        #Extract
         raw_df = extract_data()
+        #Transform
         sdf = transform_data(spark, raw_df)
+        # Validate
+        sdf = validate_data(sdf)
+        #Load
         load_data(sdf, config, jdbc_driver_path)
         logging.info("=== ETL Run Completed Successfully ===")
     except Exception as e:
