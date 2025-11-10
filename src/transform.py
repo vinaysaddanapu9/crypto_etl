@@ -15,7 +15,7 @@ def transform_data(spark, pandas_df):
         col("total_volume"),
         col("high_24h"),
         col("low_24h"),
-        current_timestamp().alias("load_timestamp")
+        current_timestamp().alias("effective_date")
     )
 
     # Validation: remove null or negative prices

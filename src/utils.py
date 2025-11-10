@@ -9,7 +9,7 @@ def setup_logging():
     log_file = os.path.join(logs_dir, f"etl_{datetime.now().strftime('%Y%m%d')}.log")
 
     logging.basicConfig(
-        filename=f"./logs/{log_file}",
+        filename="./logs/etl.log",
         level=logging.INFO,
         format="%(asctime)s - %(levelname)s - %(message)s"
     )

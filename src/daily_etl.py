@@ -1,17 +1,18 @@
 import logging
 import os, sys
-from pyspark.sql import SparkSession
 
+# --- Ensure the correct Python interpreter is used by PySpark ---
+os.environ["PYSPARK_PYTHON"] = "E:/PySpark_Projects/crypto_etl/venv/Scripts/python.exe"
+os.environ["PYSPARK_DRIVER_PYTHON"] = "E:/PySpark_Projects/crypto_etl/venv/Scripts/python.exe"
+
+# --- Fix imports for src package ---
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from pyspark.sql import SparkSession
 from src.utils import setup_logging, load_config
 from src.extract import extract_data
 from src.transform import transform_data
 from src.load import load_data
-
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
-os.environ["PYSPARK_PYTHON"] = "E:/PySpark_Projects/crypto_etl/venv/Scripts/python.exe"
-os.environ["PYSPARK_DRIVER_PYTHON"] = "E:/PySpark_Projects/crypto_etl/venv/Scripts/python.exe"
-
 
 def main():
     setup_logging()
