@@ -14,6 +14,7 @@ from src.utils import validate_data
 from src.extract import extract_data
 from src.transform import transform_data
 from src.load import load_data
+from src.optimize import create_indexes
 
 def main():
     setup_logging()
@@ -46,6 +47,7 @@ def main():
         sdf = validate_data(sdf)
         #Load
         load_data(sdf, config, jdbc_driver_path)
+        create_indexes(config)
         logging.info("=== ETL Run Completed Successfully ===")
     except Exception as e:
         logging.exception(f"ETL failed: {e}")

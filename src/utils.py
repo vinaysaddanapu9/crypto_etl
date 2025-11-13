@@ -3,7 +3,6 @@ from dotenv import load_dotenv
 from datetime import datetime
 from pyspark.sql.functions import col
 from pyspark.sql import Row
-import datetime
 import os
 
 def setup_logging():

@@ -6,6 +6,10 @@ import plotly.express as px
 import json
 import os
 
+# --- Ensure the correct Python interpreter is used by PySpark ---
+os.environ["PYSPARK_PYTHON"] = "E:/PySpark_Projects/crypto_etl/venv/Scripts/python.exe"
+os.environ["PYSPARK_DRIVER_PYTHON"] = "E:/PySpark_Projects/crypto_etl/venv/Scripts/python.exe"
+
 
 # --- Get absolute path for config.json ---
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

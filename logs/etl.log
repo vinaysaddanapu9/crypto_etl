@@ -55,3 +55,86 @@ Traceback (most recent call last):
     raise converted from None
 pyspark.sql.utils.AnalysisException: USING column `id` cannot be resolved on the left side of the join. The left-side columns: [crypto_id, symbol, name, price_usd, market_cap, total_volume, high_24h, low_24h, effective_date, end_date, is_current]
 2025-11-10 13:46:00,526 - INFO - Spark session stopped
+2025-11-10 14:04:54,563 - INFO - === ETL Run Starting ===
+2025-11-10 14:05:11,158 - INFO - Extract: fetching CoinGecko markets...
+2025-11-10 14:05:12,120 - INFO - Extract: saved raw snapshot to data\data_raw\crypto_raw_2025-11-10.csv (10 rows)
+2025-11-10 14:05:12,123 - INFO - Transform: creating Spark DataFrame
+2025-11-10 14:05:31,159 - INFO - Transform: filtered to 10 valid rows
+2025-11-10 14:05:35,340 - INFO - Loaded existing records from daily_crypto_prices
+2025-11-10 14:05:37,645 - ERROR - ETL failed: Column 'old.current_price' does not exist. Did you mean one of the following? [old.end_date, old.is_current, old.market_cap, old.name, old.price_usd, new.crypto_id, old.effective_date, new.end_date, old.high_24h, new.is_current, old.low_24h, new.market_cap, old.total_volume, old.symbol, new.name, new.price_usd, new.effective_date, new.high_24h, new.low_24h, new.total_volume, new.symbol];
+'Filter (NOT ('old.current_price = 'new.current_price) OR NOT (market_cap#82 = cast(market_cap#5L as double)))
++- Project [crypto_id#52, symbol#1, name#2, price_usd#53, market_cap#5L, total_volume#8L, high_24h#9, low_24h#10, effective_date#100, end_date#110, is_current#121, symbol#79, name#80, price_usd#81, market_cap#82, total_volume#83, high_24h#84, low_24h#85, effective_date#86, end_date#87, is_current#88]
+   +- Join LeftOuter, (crypto_id#52 = crypto_id#78)
+      :- SubqueryAlias new
+      :  +- Project [crypto_id#52, symbol#1, name#2, price_usd#53, market_cap#5L, total_volume#8L, high_24h#9, low_24h#10, effective_date#100, end_date#110, cast(true as boolean) AS is_current#121]
+      :     +- Project [crypto_id#52, symbol#1, name#2, price_usd#53, market_cap#5L, total_volume#8L, high_24h#9, low_24h#10, effective_date#100, cast(null as timestamp) AS end_date#110]
+      :        +- Project [crypto_id#52, symbol#1, name#2, price_usd#53, market_cap#5L, total_volume#8L, high_24h#9, low_24h#10, current_timestamp() AS effective_date#100]
+      :           +- Filter (isnotnull(price_usd#53) AND (price_usd#53 > cast(0 as double)))
+      :              +- Project [id#0 AS crypto_id#52, symbol#1, name#2, current_price#4 AS price_usd#53, market_cap#5L, total_volume#8L, high_24h#9, low_24h#10, current_timestamp() AS effective_date#54]
+      :                 +- LogicalRDD [id#0, symbol#1, name#2, image#3, current_price#4, market_cap#5L, market_cap_rank#6L, fully_diluted_valuation#7L, total_volume#8L, high_24h#9, low_24h#10, price_change_24h#11, price_change_percentage_24h#12, market_cap_change_24h#13L, market_cap_change_percentage_24h#14, circulating_supply#15, total_supply#16, max_supply#17, ath#18, ath_change_percentage#19, ath_date#20, atl#21, atl_change_percentage#22, atl_date#23, ... 2 more fields], false
+      +- SubqueryAlias old
+         +- Filter (is_current#88 = true)
+            +- Relation [crypto_id#78,symbol#79,name#80,price_usd#81,market_cap#82,total_volume#83,high_24h#84,low_24h#85,effective_date#86,end_date#87,is_current#88] JDBCRelation(daily_crypto_prices) [numPartitions=1]
+Traceback (most recent call last):
+  File "E:\PySpark_Projects\crypto_etl\src\daily_etl.py", line 42, in main
+    load_data(sdf, config, jdbc_driver_path)
+  File "E:\PySpark_Projects\crypto_etl\src\load.py", line 60, in load_data
+    (col("old.market_cap") != col("new.market_cap"))
+  File "E:\PySpark_Projects\crypto_etl\venv\lib\site-packages\pyspark\sql\dataframe.py", line 2079, in filter
+    jdf = self._jdf.filter(condition._jc)
+  File "E:\PySpark_Projects\crypto_etl\venv\lib\site-packages\py4j\java_gateway.py", line 1322, in __call__
+    answer, self.gateway_client, self.target_id, self.name)
+  File "E:\PySpark_Projects\crypto_etl\venv\lib\site-packages\pyspark\sql\utils.py", line 196, in deco
+    raise converted from None
+pyspark.sql.utils.AnalysisException: Column 'old.current_price' does not exist. Did you mean one of the following? [old.end_date, old.is_current, old.market_cap, old.name, old.price_usd, new.crypto_id, old.effective_date, new.end_date, old.high_24h, new.is_current, old.low_24h, new.market_cap, old.total_volume, old.symbol, new.name, new.price_usd, new.effective_date, new.high_24h, new.low_24h, new.total_volume, new.symbol];
+'Filter (NOT ('old.current_price = 'new.current_price) OR NOT (market_cap#82 = cast(market_cap#5L as double)))
++- Project [crypto_id#52, symbol#1, name#2, price_usd#53, market_cap#5L, total_volume#8L, high_24h#9, low_24h#10, effective_date#100, end_date#110, is_current#121, symbol#79, name#80, price_usd#81, market_cap#82, total_volume#83, high_24h#84, low_24h#85, effective_date#86, end_date#87, is_current#88]
+   +- Join LeftOuter, (crypto_id#52 = crypto_id#78)
+      :- SubqueryAlias new
+      :  +- Project [crypto_id#52, symbol#1, name#2, price_usd#53, market_cap#5L, total_volume#8L, high_24h#9, low_24h#10, effective_date#100, end_date#110, cast(true as boolean) AS is_current#121]
+      :     +- Project [crypto_id#52, symbol#1, name#2, price_usd#53, market_cap#5L, total_volume#8L, high_24h#9, low_24h#10, effective_date#100, cast(null as timestamp) AS end_date#110]
+      :        +- Project [crypto_id#52, symbol#1, name#2, price_usd#53, market_cap#5L, total_volume#8L, high_24h#9, low_24h#10, current_timestamp() AS effective_date#100]
+      :           +- Filter (isnotnull(price_usd#53) AND (price_usd#53 > cast(0 as double)))
+      :              +- Project [id#0 AS crypto_id#52, symbol#1, name#2, current_price#4 AS price_usd#53, market_cap#5L, total_volume#8L, high_24h#9, low_24h#10, current_timestamp() AS effective_date#54]
+      :                 +- LogicalRDD [id#0, symbol#1, name#2, image#3, current_price#4, market_cap#5L, market_cap_rank#6L, fully_diluted_valuation#7L, total_volume#8L, high_24h#9, low_24h#10, price_change_24h#11, price_change_percentage_24h#12, market_cap_change_24h#13L, market_cap_change_percentage_24h#14, circulating_supply#15, total_supply#16, max_supply#17, ath#18, ath_change_percentage#19, ath_date#20, atl#21, atl_change_percentage#22, atl_date#23, ... 2 more fields], false
+      +- SubqueryAlias old
+         +- Filter (is_current#88 = true)
+            +- Relation [crypto_id#78,symbol#79,name#80,price_usd#81,market_cap#82,total_volume#83,high_24h#84,low_24h#85,effective_date#86,end_date#87,is_current#88] JDBCRelation(daily_crypto_prices) [numPartitions=1]
+
+2025-11-10 14:05:38,234 - INFO - Spark session stopped
+2025-11-10 14:09:05,772 - INFO - === ETL Run Starting ===
+2025-11-10 14:09:21,722 - INFO - Extract: fetching CoinGecko markets...
+2025-11-10 14:09:22,501 - INFO - Extract: saved raw snapshot to data\data_raw\crypto_raw_2025-11-10.csv (10 rows)
+2025-11-10 14:09:22,512 - INFO - Transform: creating Spark DataFrame
+2025-11-10 14:09:33,325 - INFO - Transform: filtered to 10 valid rows
+2025-11-10 14:09:35,979 - INFO - Loaded existing records from daily_crypto_prices
+2025-11-10 14:09:40,543 - INFO - Detected 10 changed records.
+2025-11-10 14:09:53,155 - INFO - SCD Type 2 update complete. Final record count: 20
+2025-11-10 14:09:53,155 - INFO - Load: write complete
+2025-11-10 14:09:53,155 - INFO - === ETL Run Completed Successfully ===
+2025-11-10 14:09:54,097 - INFO - Spark session stopped
+2025-11-10 14:19:16,718 - INFO - === ETL Run Starting ===
+2025-11-10 14:19:31,906 - INFO - Extract: fetching CoinGecko markets...
+2025-11-10 14:19:32,644 - INFO - Extract: saved raw snapshot to data\data_raw\crypto_raw_2025-11-10.csv (10 rows)
+2025-11-10 14:19:32,649 - INFO - Transform: creating Spark DataFrame
+2025-11-10 14:19:48,667 - INFO - Transform: filtered to 10 valid rows
+2025-11-10 14:19:52,655 - INFO - Loaded existing records from daily_crypto_prices
+2025-11-10 14:19:58,368 - INFO - Detected 10 changed records.
+2025-11-10 14:20:11,496 - INFO - SCD Type 2 update complete. Final record count: 30
+2025-11-10 14:20:11,496 - INFO - Load: write complete
+2025-11-10 14:20:11,496 - INFO - === ETL Run Completed Successfully ===
+2025-11-10 14:20:12,432 - INFO - Spark session stopped
+2025-11-13 19:05:14,047 - INFO - === ETL Run Starting ===
+2025-11-13 19:05:45,251 - INFO - Extract: fetching CoinGecko markets...
+2025-11-13 19:05:45,956 - INFO - Extract: saved raw snapshot to data\data_raw\crypto_raw_2025-11-13.csv (10 rows)
+2025-11-13 19:05:45,956 - INFO - Transform: creating Spark DataFrame
+2025-11-13 19:05:57,880 - INFO - Transform: filtered to 10 valid rows
+2025-11-13 19:06:10,950 - INFO - Loaded existing records from daily_crypto_prices
+2025-11-13 19:06:15,888 - INFO - Detected 30 changed records.
+2025-11-13 19:06:30,388 - INFO - SCD Type 2 update complete. Final record count: 70
+2025-11-13 19:06:30,388 - INFO - Load: write complete
+2025-11-13 19:06:30,678 - ERROR - Failed to create indexes: could not create unique index "idx_crypto_effective_unique"
+DETAIL:  Key (crypto_id, effective_date)=(tron, 2025-11-10 14:09:41.055) is duplicated.
+
+2025-11-13 19:06:30,678 - INFO - === ETL Run Completed Successfully ===
+2025-11-13 19:06:31,320 - INFO - Spark session stopped

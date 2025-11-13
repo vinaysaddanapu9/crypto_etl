@@ -24,7 +24,7 @@ def run_etl():
         logging.error(f"ETL failed: {result.stderr}")
 
 # Runs every day at 10:00 AM
-schedule.every().day.at("10:00").do(run_etl)
+schedule.every().day.at("19:05").do(run_etl)
 
 logging.info("Scheduler started...")
 print("Scheduler running...")
