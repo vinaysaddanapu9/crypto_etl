@@ -2,8 +2,8 @@ from setuptools import setup, find_packages
 
 setup(
     name="crypto_etl",
-    version="0.1.0",
-    author="Your Name",
+    version="0.1.1",
+    author="Vinay Saddanapu",
     author_email="your.email@example.com",
     description="PySpark ETL for CoinGecko data",
     packages=find_packages(where="src"),
